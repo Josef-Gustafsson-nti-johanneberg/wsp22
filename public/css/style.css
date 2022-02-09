@@ -29,7 +29,8 @@ body header {
           align-items: center;
   height: 100%;
   height: 300px;
-  width: 99vw;
+  width: 100%;
+  max-width: 99vw;
 }
 
 body header h1 {
@@ -38,7 +39,8 @@ body header h1 {
 
 body main {
   background-color: honeydew;
-  width: 1400px;
+  width: 100%;
+  max-width: 80vw;
   height: 1000px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -49,7 +51,6 @@ body main .login {
   margin: auto;
   margin-top: 5px;
   width: 400px;
-  height: 130px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

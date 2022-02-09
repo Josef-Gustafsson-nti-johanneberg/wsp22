@@ -14,21 +14,23 @@ body{
         align-items: center;
         height: 100%;
         height: 300px;
-        width: 99vw;
+        width: 100%;
+        max-width: 99vw;
         h1{
+            // width: 100%;
             font-size: 120px;
         }
     }
     main{
         background-color: honeydew;
-        width:1400px;
+        width: 100%;
+        max-width:80vw;
         height: 1000px;
         display: flex;
         .login{
             margin: auto;
             margin-top: 5px;
             width: 400px;
-            height: 130px;
             display: flex;
             justify-content: space-evenly;
             align-items: center;

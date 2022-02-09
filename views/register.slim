@@ -1,0 +1,36 @@
+main 
+    .login
+        h2 Registrera användare
+        form action="users/new" method="post" 
+            p Anvädarnamn
+            input type="text" name="username" placeholder="Enter Username"/
+            p Lösenord
+            input type="password" name="password" placeholder="Enter password"/
+            p Upprepa lösenord
+            input type="password" name="password_confirm" placeholder="Enter password againg"/
+            p Roll
+            select# name="role" 
+                option value="" Vänligen väl ett alternativ 
+                option value="Elev" Elev 
+                option value="Mentor"Mentor
+                option value="Admin" Admin
+            p Klass
+            select# name="klass" 
+                option value="" Vänligen väl ett alternativ 
+                option value="1A" 1A 
+                option value="1B" 1B 
+                option value="1C" 1C 
+                option value="1D" 1D 
+                option value="1E" 1E 
+                option value="2A" 2A 
+                option value="2B" 2B 
+                option value="2C" 2C 
+                option value="2D" 2D
+                option value="2E" 2E
+                option value="3A" 3A
+                option value="3B" 3B
+                option value="3C" 3C
+                option value="3D" 3D
+                option value="3E" 3E
+                option value="Admin" Admin    
+            input type="submit" value="Registrera ny användare"/
