@@ -6,11 +6,11 @@ require 'bcrypt'
 enable :sessions
 
 get('/') do
-    # db = SQLite3::Database.new('db/databas.db')
-    # db.results_as_hash = true
-    # result = db.execute('SELECT * FROM resurants')
-    slim(:index)
-    # slim(:index,locals:{todos:result})
+    db = SQLite3::Database.new('db/databas.db')
+    db.results_as_hash = true
+    result = db.execute('SELECT * FROM resturants')
+    # slim(:index)
+    slim(:index,locals:{todos:result})
 end
 
 get('/showlogin') do
@@ -32,7 +32,10 @@ post('/users/new'){
   if (password == password_confirm)
     password_digest = BCrypt::Password.create(password)
     db = SQLite3::Database.new('db/databas.db')
-    db.execute('INSERT INTO users (user_name,password,role) VALUES (?,?,?)',username,password_digest,role)
+    db.results_as_hash = true
+    temp = db.execute('SELECT id FROM class WHERE name = (?)',klass).first
+    p temp
+    db.execute('INSERT INTO users (user_name,password,role,class_id) VALUES (?,?,?,?)',username,password_digest,role,temp["id"].to_i)
     redirect('/')
   else
     "lösenorden matchade inte"

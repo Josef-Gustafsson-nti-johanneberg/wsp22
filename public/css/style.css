@@ -41,10 +41,36 @@ body main {
   background-color: honeydew;
   width: 100%;
   max-width: 80vw;
-  height: 1000px;
+  min-height: 70vh;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+}
+
+body main .resturant_wrapper {
+  margin-top: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  width: 100%;
+  gap: 10px;
+}
+
+body main .resturant_wrapper .resturant_name {
+  font-size: 30px;
+  font-weight: 900;
+}
+
+body main .resturant_wrapper .resturant {
+  width: 200px;
+}
+
+body main .resturant_wrapper .resturant #resturant_img {
+  width: 200px;
 }
 
 body main .login {

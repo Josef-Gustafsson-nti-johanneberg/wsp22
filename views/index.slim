@@ -1,5 +1,10 @@
-main 
-    / - todos.each do |todo|
-    / p = todo
+main
+    .resturant_wrapper
+        - todos.each do |todo|
+            .resturant
+                img id="resturant_img" src="/img/#{todo["picture"]}.jpg" alt=""/
+                p class="resturant_name" = todo["name"]
+                p = todo["description"]
+                p = todo["catagory_id"]
 
 
