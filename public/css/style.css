@@ -37,6 +37,12 @@ body header h1 {
   font-size: 120px;
 }
 
+body .asign {
+  display: -ms-grid;
+  display: grid;
+  grid-auto-flow: row;
+}
+
 body main {
   background-color: honeydew;
   width: 100%;
@@ -45,6 +51,20 @@ body main {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+}
+
+body main .small_resturant_wrapper {
+  width: 100%;
+  gap: 10px;
+  grid-auto-flow: row;
+}
+
+body main .small_resturant_wrapper .small_resturant {
+  height: 30px;
+  background-color: aqua;
+  display: -ms-grid;
+  display: grid;
+  grid-auto-flow: column;
 }
 
 body main .resturant_wrapper {

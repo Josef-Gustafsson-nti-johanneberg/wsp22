@@ -21,18 +21,37 @@ body{
             font-size: 120px;
         }
     }
+    .asign{
+        display: grid;
+        grid-auto-flow: row;
+    }
     main{
         background-color: honeydew;
         width: 100%;
         max-width:80vw;
         min-height: 70vh;
         display: flex;
+        .small_resturant_wrapper{
+            width: 100%;
+            gap: 10px;
+            // display: grid;
+            grid-auto-flow: row;
+            .small_resturant{
+                height: 30px;
+                background-color: aqua;
+                display: grid;
+                grid-auto-flow: column;
+            }
+        }
+
+
         .resturant_wrapper{
             margin-top: 10px;
             display: flex;
             flex-direction: row;
             width: 100%;
             gap: 10px;
+
             .resturant_name{
                 font-size: 30px;
                 font-weight: 900;

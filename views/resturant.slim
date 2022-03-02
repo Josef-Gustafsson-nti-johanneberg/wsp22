@@ -1,0 +1,63 @@
+main.asign
+    .small_resturant_wrapper
+        - todos.each do |todo|
+            .small_resturant
+                p class="resturant_name" = todo["name"]
+                / input type="checkbox" name="1A" value="1" checked="checked"
+                / label for="1A" 1A 
+                / input type="checkbox" name="1B"
+                / label for="1A" 1B 
+                / input type="checkbox" name="1C"
+                / label for="1A" 1C
+                / input type="checkbox" name="1D"
+                / label for="1A" 1D
+                / input type="checkbox" name="1E"
+                / label for="1A" 1E 
+                / input type="checkbox" name="2A"
+                / label for="1A" 2A 
+                / input type="checkbox" name="2B"
+                / label for="1A" 2B 
+                / input type="checkbox" name="2C"
+                / label for="1A" 2C 
+                / input type="checkbox" name="2D"
+                / label for="1A" 2D 
+                / input type="checkbox" name="2E"
+                / label for="1A" 2E 
+                / input type="checkbox" name="3A"
+                / label for="1A" 3A 
+                / input type="checkbox" name="3B"
+                / label for="1A" 3B 
+                / input type="checkbox" name="3C"
+                / label for="1A" 3C 
+                / input type="checkbox" name="3D"
+                / label for="1A" 3D 
+                / input type="checkbox" name="3E"
+                / label for="1A" 3E
+
+    .register_resturant
+        h2 Registrera ny resturang
+        form action="resturant" method="post" 
+            p Resturang namn
+            input type="text" name="resturant" placeholder="Resturang"/
+            p Beskrivning
+            input type="text" name="beskrivning" placeholder="Beskrivning"/
+            p Kategori
+            select# name="catagory" 
+                option value="" Vänligen väl ett alternativ 
+                option value="1" Snabbmat 
+                option value="2" Finresturang
+                option value="3" Indiskt
+                option value="4" Kinesiskt
+                option value="5" Husmanskost
+                option value="6" Gormet
+                option value="7" Takaway
+            p Plats
+            input type="text" name="plats" placeholder="Plats"/
+            p Bild
+            input type="text" name="bild" placeholder="Bild scr"/
+
+            
+
+            input type="submit" value="Registrera ny resturang"/
+
+

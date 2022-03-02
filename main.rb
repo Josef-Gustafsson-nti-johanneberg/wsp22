@@ -21,13 +21,20 @@ get('/register') do
   slim(:register)
 end
 
+get('/admin') do
+  db = SQLite3::Database.new('db/databas.db')
+  db.results_as_hash = true
+  result = db.execute('SELECT * FROM resturants')
+  slim(:resturant,locals:{todos:result})
+
+end
+
 post('/users/new'){
   username = params[:username]
   password = params[:password]
   password_confirm = params[:password_confirm]
   klass = params[:klass]
   role = params[:role]
-  p role
 
   if (password == password_confirm)
     password_digest = BCrypt::Password.create(password)
@@ -41,6 +48,20 @@ post('/users/new'){
     "lösenorden matchade inte"
   end
 
+}
+
+post('/resturant'){
+  resturant = params[:resturant]
+  beskrivning = params[:beskrivning]
+  kategori = params[:catagory]
+  plats = params[:plats]
+  bild = params[:bild]
+
+  db = SQLite3::Database.new('db/databas.db')
+  db.execute('INSERT INTO resturants (name,location,picture,description,catagory_id) VALUES (?,?,?,?,?)',resturant,plats,bild,beskrivning,kategori)
+  redirect('/')
+
+  
 }
 
 
