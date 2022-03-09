@@ -60,9 +60,22 @@ post('/resturant'){
   db = SQLite3::Database.new('db/databas.db')
   db.execute('INSERT INTO resturants (name,location,picture,description,catagory_id) VALUES (?,?,?,?,?)',resturant,plats,bild,beskrivning,kategori)
   redirect('/')
-
   
 }
+
+post('/delete_resturant/:resturant'){
+  resturant = params[:resturant]
+  p resturant
+  p resturant
+  p resturant
+  p resturant
+  p resturant
+  p resturant
+  db = SQLite3::Database.new('db/databas.db')
+  db.execute('DELETE FROM resturants WHERE name = ?',resturant)
+  redirect('/admin')
+}
+
 
 
 post('/login'){

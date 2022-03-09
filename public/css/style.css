@@ -89,8 +89,9 @@ body main .resturant_wrapper .resturant {
   width: 200px;
 }
 
-body main .resturant_wrapper .resturant #resturant_img {
+body main .resturant_wrapper .resturant .resturant_img {
   width: 200px;
+  height: 150px;
 }
 
 body main .login {
