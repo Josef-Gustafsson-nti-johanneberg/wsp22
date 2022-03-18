@@ -49,9 +49,11 @@ body{
             margin-top: 10px;
             display: flex;
             flex-direction: row;
+            flex-wrap: wrap;
             width: 100%;
             gap: 10px;
 
+        
             .resturant_name{
                 font-size: 30px;
                 font-weight: 900;

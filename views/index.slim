@@ -5,6 +5,6 @@ main
                 img class="resturant_img" src="/img/#{todo["picture"]}.jpg" alt=""/
                 p class="resturant_name" = todo["name"]
                 p = todo["description"]
-                p = todo["catagory_id"]
+                p = category_id_to_category(todo["catagory_id"]).first["name"]
 
 
