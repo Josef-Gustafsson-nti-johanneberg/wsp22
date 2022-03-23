@@ -1,0 +1,27 @@
+main.asign
+    .new_recenssion
+        h2 Skriv recenssion
+        form action="/recenssioner" method="post" 
+            select# name="resturang"
+                option value="" Vänligen välj en resturang 
+                - resturant_name.each do |resturant|
+                    option value="#{resturant["name"]}" #{resturant["name"]}
+            p Titel 
+            input type="text" name="titel" placeholder="Titel"            
+            p Recenssion
+            input type="text" name="recenssion" placeholder="Recenssion"
+            br
+            select# name="rating"
+                option value="" Vänligen betygsätt resturang            
+                option value="1" 1 Stjärna            
+                option value="2" 2 Stjärnor            
+                option value="3" 3 Stjärnor            
+                option value="4" 4 Stjärnor            
+                option value="5" 5 Stjärnor            
+            p Bild
+            input type="text" name="bild" placeholder="Bild scr"
+            input type="submit" value="Registrera ny recenssion"
+
+    
+
+

@@ -25,6 +25,9 @@ body{
         display: grid;
         grid-auto-flow: row;
     }
+    .show{
+        flex-direction: column;
+    }
     main{
         background-color: honeydew;
         width: 100%;
@@ -44,7 +47,24 @@ body{
             }
         }
 
-
+        .recession_wrapper{
+            margin-top: 10px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+            gap: 10px;
+        
+            .recession{
+                width:200px ;
+                background-color: rgb(204, 255, 255);
+                    .recenssion_img{
+                        width: 200px;
+                        height: 150px;
+                    }
+            }
+        }
+        
         .resturant_wrapper{
             margin-top: 10px;
             display: flex;

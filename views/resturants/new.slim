@@ -1,7 +1,7 @@
 main.asign
     .register_resturant
         h2 Registrera ny resturang
-        form action="resturant" method="post" 
+        form action="/resturant" method="post" 
             p Resturang namn
             input type="text" name="resturant" placeholder="Resturang"/
             p Beskrivning
@@ -22,15 +22,6 @@ main.asign
             input type="text" name="bild" placeholder="Bild scr"/
             input type="submit" value="Registrera ny resturang"/
 
-    .resturant_wrapper
-        - todos.each do |todo|
-            .resturant
-                img class="resturant_img" src="/img/#{todo["picture"]}.jpg" alt=""/
-                p class="resturant_name" = todo["name"]
-                p = todo["description"]
-                p = todo["catagory_id"]
-                form action="delete_resturant/#{todo["name"]}" method="post" 
-                    input type="submit" value="Ta bort resturang"/
-
+    
 
 

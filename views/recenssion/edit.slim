@@ -1,0 +1,24 @@
+main.asign
+    .new_recenssion
+        h2 Redigera recenssion
+        form action="/recenssion/#{recenssion["id"]}/update" method="post" 
+            h2 = recenssion["resturant"]
+            p Titel 
+            input type="text" name="titel" value=recenssion["title"]            
+            p Recenssion
+            input type="text" name="beskrivning" value=recenssion["recenssion"]
+            br
+            select# name="rating"
+                option value="" Vänligen betygsätt resturang            
+                option value="1" 1 Stjärna            
+                option value="2" 2 Stjärnor            
+                option value="3" 3 Stjärnor            
+                option value="4" 4 Stjärnor            
+                option value="5" 5 Stjärnor            
+            p Bild
+            input type="text" name="bild" value=recenssion["picture"]
+            input type="submit" value="Updatera recenssion"
+
+    
+
+

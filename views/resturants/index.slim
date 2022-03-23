@@ -6,7 +6,7 @@ main
                 p class="resturant_name" = resturant["name"]
                 p = resturant["description"]
                 p = category_id_to_category(resturant["catagory_id"]).first["name"]
-                a href="/resturant/#{resturant["name"]}" Mer info och recensioner
-
-
-
+                form action="/resturant/#{resturant["name"]}/delete" method="post" 
+                    input type="submit" value="Ta bort resturang"/
+                form action="/resturant/#{resturant["name"]}/edit" method="get" 
+                    input type="submit" value="Redigera resturang"/

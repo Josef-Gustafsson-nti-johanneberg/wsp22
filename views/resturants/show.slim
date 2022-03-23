@@ -1,0 +1,18 @@
+main.show
+    .resturant_wrapper
+        .resturant
+            img class="resturant_img" src="/img/#{resturant["picture"]}.jpg" alt="resturangbild"/
+            p class="resturant_name" = resturant["name"]
+            p = resturant["description"]
+            p = category_id_to_category(resturant["catagory_id"]).first["name"]
+    br
+    h2 Ressensioner
+    .recession_wrapper
+        - ratings.each do |recenssion|
+            .recession
+                h3 = recenssion["resturant"]
+                h4 class="title_name" = recenssion["title"]
+                p = recenssion["recenssion"]
+                p = recenssion["stars"]
+                img class="recenssion_img" src="/img/#{recenssion["picture"]}.jpg" alt="bild på recenssion"
+                br
