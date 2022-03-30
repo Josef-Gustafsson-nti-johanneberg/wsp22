@@ -5,6 +5,13 @@ require 'bcrypt'
 require 'sinatra/reloader'
 
 enable :sessions
+
+def right_persson(recenssion, user_id)
+  db = open_database
+  recenssion_user_id = db.execute('SELECT user_id FROM recenssioner WHERE title = ?', recenssion).first
+  return recenssion_user_id["user_id"] == user_id
+end
+
 def open_database
     db = SQLite3::Database.new('db/databas.db')
     db.results_as_hash = true
@@ -18,6 +25,17 @@ def role(id)
     return nil
   else
     return result["role"]
+  end
+end
+
+helpers do 
+  def number_to_stars(star_number)
+    stars = ""
+    for i in 1..star_number do
+      stars += "★"
+      p stars
+    end
+    return stars
   end
 end
 
@@ -66,13 +84,19 @@ end
 
 # recenssioner
 get('/recenssioner/'){
-  # if role(session[:id]) == "Admin"
+  if role(session[:id]) == "Admin"
     db = open_database
     result = db.execute('SELECT * FROM recenssioner')
-    slim(:'recenssion/index',locals:{recenssioner:result})  
-  # else
-  #   redirect('/showlogin')
-  # end
+    header = "Alla recensioner"
+    slim(:'recenssion/index',locals:{recenssioner:result, title:header})
+    elsif session[:id] != nil
+      db = open_database
+      result = db.execute('SELECT * FROM recenssioner WHERE user_id = ?',session[:id])
+      header = "Dina recensioner"
+      slim(:'recenssion/index',locals:{recenssioner:result, title:header})
+    else
+    redirect('/showlogin')
+  end
 }
 
 get('/recenssioner/new'){
@@ -100,20 +124,24 @@ post('/recenssioner'){
 
 get('/recenssion/:recenssion/edit')do
   recenssion = params[:recenssion]
-  db = open_database
-  result = db.execute('SELECT * FROM recenssioner WHERE title = ?', recenssion).first
-  slim(:'recenssion/edit',locals:{recenssion:result})
+  if right_persson(recenssion, session[:id])  || role(session[:id])
+    db = open_database
+    result = db.execute('SELECT * FROM recenssioner WHERE title = ?', recenssion).first
+    slim(:'recenssion/edit',locals:{recenssion:result})
+  else
+    "error"
+  end
 end
 
-post('/recenssion/:recenssion/update')do
+post('/recenssion/:id/update')do
   id = params[:id]
-  titel = params[:titel]
+  title = params[:titel]
   recenssion = params[:beskrivning]
   rating = params[:rating]
   bild = params[:bild] 
   user_id = session[:id]
   db = open_database
-  db.execute("UPDATE recenssioner WHERE id = #{title} SET name=?, location=?,picture=?,description=?,catagory_id=?",resturant,plats,bild,beskrivning,kategori)
+  db.execute("UPDATE recenssioner SET stars=?,picture=?,title=?,recenssion=? WHERE id = #{id}",rating,bild,title,recenssion)
   redirect('/')
 end
 

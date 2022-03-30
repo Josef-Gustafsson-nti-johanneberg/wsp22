@@ -1,13 +1,14 @@
 main 
+    h1 #{title}
     .recession_wrapper
-            - recenssioner.each do |recenssion|
-                .recession
-                    h2 = recenssion["resturant"]
-                    p class="title_name" = recenssion["title"]
-                    p = recenssion["recenssion"]
-                    p = recenssion["stars"]
-                    img class="recenssion_img" src="/img/#{recenssion["picture"]}.jpg" alt="bild på recenssion"
-                    form action="/recenssion/#{recenssion["title"]}/delete" method="post" 
-                        input type="submit" value="Ta bort recenssion"/
-                    form action="/recenssion/#{recenssion["title"]}/edit" method="get" 
-                        input type="submit" value="Redigera recenssion"/
+        - recenssioner.each do |recenssion|
+            .recession
+                h2 = recenssion["resturant"]
+                p class="title_name" = recenssion["title"]
+                p = recenssion["recenssion"]
+                p = number_to_stars(recenssion["stars"])
+                img class="recenssion_img" src="/img/#{recenssion["picture"]}.jpg" alt="bild på recenssion"
+                form action="/recenssion/#{recenssion["title"]}/delete" method="post" 
+                    input type="submit" value="Ta bort recenssion"/
+                form action="/recenssion/#{recenssion["title"]}/edit" method="get" 
+                    input type="submit" value="Redigera recenssion"/
