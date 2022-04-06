@@ -7,7 +7,7 @@ main
                 p class="title_name" = recenssion["title"]
                 p = recenssion["recenssion"]
                 p = number_to_stars(recenssion["stars"])
-                img class="recenssion_img" src="/img/#{recenssion["picture"]}.jpg" alt="bild på recenssion"
+                img class="recenssion_img" src="#{recenssion["picture"]}" alt="bild p recenssion"
                 form action="/recenssion/#{recenssion["title"]}/delete" method="post" 
                     input type="submit" value="Ta bort recenssion"/
                 form action="/recenssion/#{recenssion["title"]}/edit" method="get" 

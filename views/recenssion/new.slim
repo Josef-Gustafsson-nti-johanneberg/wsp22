@@ -1,7 +1,7 @@
 main.asign
     .new_recenssion
         h2 Skriv recenssion
-        form action="/recenssioner" method="post" 
+        form action="/recenssioner" method="post" enctype="multipart/form-data"
             select# name="resturang"
                 option value="" Vänligen välj en resturang 
                 - resturant_name.each do |resturant|
@@ -19,7 +19,8 @@ main.asign
                 option value="4" 4 Stjärnor            
                 option value="5" 5 Stjärnor            
             p Bild
-            input type="text" name="bild" placeholder="Bild scr"
+            input type="file" name="image"
+            br
             input type="submit" value="Registrera ny recenssion"
 
     

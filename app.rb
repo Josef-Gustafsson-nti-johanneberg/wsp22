@@ -114,11 +114,21 @@ post('/recenssioner'){
   titel = params[:titel]
   recenssion = params[:recenssion]
   rating = params[:rating]
-  bild = params[:bild] 
   user_id = session[:id]
+  # path = File.join("./public/uploaded_pictures/",params[:file][:filename])
+  if params[:image] && params[:image][:filename]
+    filename = params[:image][:filename]
+    file = params[:image][:tempfile]
+    path = "./public/uploaded_pictures/#{filename}"
 
+    # Write file to disk
+    File.open(path, 'wb') do |f|
+      f.write(file.read)
+    end
+  end
+  path = "/uploaded_pictures/#{filename}"
   db = open_database
-  db.execute('INSERT INTO recenssioner (user_id,resturant,stars,picture,title,recenssion) VALUES (?,?,?,?,?,?)',user_id,resturang,rating,bild,titel,recenssion)
+  db.execute('INSERT INTO recenssioner (user_id,resturant,stars,picture,title,recenssion) VALUES (?,?,?,?,?,?)',user_id,resturang,rating,path,titel,recenssion)
   redirect('/recenssioner/') 
 }
 
@@ -143,6 +153,17 @@ post('/recenssion/:id/update')do
   db = open_database
   db.execute("UPDATE recenssioner SET stars=?,picture=?,title=?,recenssion=? WHERE id = #{id}",rating,bild,title,recenssion)
   redirect('/')
+end
+
+post('/recenssion/:recenssion/delete')do
+  recenssion = params[:recenssion]
+  if right_persson(recenssion, session[:id])  || role(session[:id])
+    db = open_database
+    db.execute('DELETE FROM recenssioner WHERE title = ?',recenssion)
+    redirect('/recenssioner/')
+  else
+    "error"
+  end
 end
 
 #users
