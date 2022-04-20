@@ -1,13 +1,39 @@
 main
     .register_resturant
             h2 Redigera resturang
-            form action="/resturant/#{resturant["name"]}/update" method="post" 
+            form action="/resturant/#{resturant["id"]}/update" method="post" 
                 p Resturang namn
                 input type="text" name="resturant" placeholder="Resturang" value=resturant["name"]
                 p Beskrivning
                 input type="text" name="beskrivning" placeholder="Beskrivning" value=resturant["description"]
+                p Antal kategorier  
+                select# name="amount" 
+                    option value="" Vänligen väl ett antal 
+                    option value="1" 1 
+                    option value="2" 2
+                    option value="3" 3
                 p Kategori
-                select# name="catagory" 
+                select# name="sak" value = "1"
+                    option value="" Vänligen väl ett alternativ 
+                    option selected=selected["1"] value="1" Snabbmat 
+                    option selected=selected["2"] value="2" Finresturang
+                    option selected=selected["3"] value="3" Indiskt
+                    option selected=selected["4"] value="4" Kinesiskt
+                    option selected=selected["5"] value="5" Husmanskost
+                    option selected=selected["6"] value="6" Gormet
+                    option selected=selected["7"] value="7" Takaway
+                br
+                select# name="catagory1" 
+                    option value="" Vänligen väl ett alternativ 
+                    option value="1" Snabbmat 
+                    option value="2" Finresturang
+                    option value="3" Indiskt
+                    option value="4" Kinesiskt
+                    option value="5" Husmanskost
+                    option value="6" Gormet
+                    option value="7" Takaway
+                br
+                select# name="catagory2" 
                     option value="" Vänligen väl ett alternativ 
                     option value="1" Snabbmat 
                     option value="2" Finresturang

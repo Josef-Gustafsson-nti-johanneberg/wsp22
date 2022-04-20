@@ -3,31 +3,16 @@ require 'slim'
 require 'sqlite3'
 require 'bcrypt'
 require 'sinatra/reloader'
+require './model/model.rb'
+
+time_array = []
 
 enable :sessions
 
-def right_persson(recenssion, user_id)
-  db = open_database
-  recenssion_user_id = db.execute('SELECT user_id FROM recenssioner WHERE title = ?', recenssion).first
-  return recenssion_user_id["user_id"] == user_id
-end
+include Model #wat dis?
 
-def open_database
-    db = SQLite3::Database.new('db/databas.db')
-    db.results_as_hash = true
-    return db
-end
-
-def role(id)
-  db = open_database
-  result = db.execute('SELECT role FROM users WHERE id = (?)',id).first
-  if result == nil
-    return nil
-  else
-    return result["role"]
-  end
-end
-
+# en test sak nu
+#
 helpers do 
   def number_to_stars(star_number)
     stars = ""
@@ -38,43 +23,68 @@ helpers do
   end
 end
 
+
 helpers do
   def resturant_id_to_category(id)
-    db = open_database
-    db.results_as_hash = false
-  return db.execute('SELECT category.name FROM resturnat_category_relation INNER JOIN category ON resturnat_category_relation.category_id = category.id WHERE resturant_id = (?)',id)
+    return innerjoin(id)
   end
 end
 
+def cooldown(time_array, time)
+  time_array << time
+  if time_array.length >=3 && time_array[-1]-time_array[-2] < 10
+    return true
+  else
+    return false
+  end
+end
+
+#Visar förstasidan på school-food som visar upp appa resturanger
+#
 get('/') do
-  db = open_database
-  result = db.execute('SELECT * FROM resturants')
+  result = select_all_from_resturants()
   slim(:index,locals:{resturants:result})
 end
 
+# Visar upp inloggnings sidan där användaren får logga in
+# 
 get('/showlogin') do
-  slim(:login)
+  text = ""
+  slim(:login,locals:{text:text})
 end
 
+# Loggar in användaren om användaren skriver in rätt användarnamn och lösenord. Om användaren skriver in ett användarnamn som inte finns så kommer ett felmedelande att det itne finns och om användaren skriver in fel lösenord som kommer också ett felmeddelande om det
+# 
+# @param [String] username, Användarnamnet som användaren skrev in
+# @param [String] password, Lösenordet som användaren skrev in
 post('/login')do
-    user_name = params[:user_name].downcase
-    password = params[:password]
-    db = open_database
-    användare = db.execute('SELECT user_name FROM users WHERE user_name = (?)',user_name).first
-    if användare == nil
-      "Användarnamnet finns inte"
-    else
-      db = open_database
-      result = db.execute('SELECT * FROM users WHERE user_name = ?',user_name).first
-      pwdigest = result['password']
-      id = result['id']
-      if BCrypt::Password.new(pwdigest) == password
+  time = Time.now.to_i
+  input_user_name = params[:user_name].downcase
+  password = params[:password]
+  användare = get_all_from_user(input_user_name)
+  if användare == nil
+    text = "Användarnamnet finns inte"
+  else
+    pwdigest = användare['password']
+    id = användare['id']
+
+    if password_match(pwdigest, password)
+      if cooldown(time_array, time)
+        text = "För många försök, vänta 10 sekunder"
+        slim(:login,locals:{text:text})
+      else
         session[:id] = id
         redirect('/')
-      else
-        "Fel lösenord"
+      end
+    else
+      text = "Fel lösenord"      
+      if cooldown(time_array, time)
+        text = "För många försök, vänta 10 sekunder"
+        slim(:login,locals:{text:text})
       end
     end
+  end
+  slim(:login,locals:{text:text})
 end
 
 get('/destroy')do
@@ -82,16 +92,16 @@ get('/destroy')do
   redirect('/')
 end
 
+
+
 # recenssioner
 get('/recenssioner/'){
   if role(session[:id]) == "Admin"
-    db = open_database
-    result = db.execute('SELECT * FROM recenssioner')
+    result = select_all_from_recenssioner(nil, nil)
     header = "Alla recensioner"
     slim(:'recenssion/index',locals:{recenssioner:result, title:header})
     elsif session[:id] != nil
-      db = open_database
-      result = db.execute('SELECT * FROM recenssioner WHERE user_id = ?',session[:id])
+      result = select_all_from_recenssioner(session[:id])
       header = "Dina recensioner"
       slim(:'recenssion/index',locals:{recenssioner:result, title:header})
     else
@@ -99,15 +109,17 @@ get('/recenssioner/'){
   end
 }
 
+
+
 get('/recenssioner/new'){
   if role(session[:id]) != nil
-    db = open_database
-    result = db.execute('SELECT name FROM resturants')
+    result = select_name_from_resturants
     slim(:'recenssion/new',locals:{resturant_name:result})
   else
     redirect('/showlogin')
   end
 }
+
 
 post('/recenssioner'){
   resturang = params[:resturang]
@@ -124,19 +136,19 @@ post('/recenssioner'){
     end
   end
   path = "/uploaded_pictures/#{filename}"
-  db = open_database
-  db.execute('INSERT INTO recenssioner (user_id,resturant,stars,picture,title,recenssion) VALUES (?,?,?,?,?,?)',user_id,resturang,rating,path,titel,recenssion)
+  incert_into_recenssion(user_id,resturang,rating,path,titel,recenssion)
   redirect('/recenssioner/') 
 }
 
 get('/recenssion/:recenssion/edit')do
+  text = ""
   recenssion = params[:recenssion]
-  if right_persson(recenssion, session[:id])  || role(session[:id])
-    db = open_database
-    result = db.execute('SELECT * FROM recenssioner WHERE title = ?', recenssion).first
-    slim(:'recenssion/edit',locals:{recenssion:result})
+  if right_persson(recenssion, session[:id]) || role(session[:id])
+    result = select_all_from_recenssioner("title", recenssion).first
+    slim(:'recenssion/edit',locals:{recenssion:result,text:text})
   else
-    "error"
+    text = "Vänligen logga in först"
+    slim(:login,locals:{text:text})
   end
 end
 
@@ -147,25 +159,31 @@ post('/recenssion/:id/update')do
   rating = params[:rating]
   bild = params[:bild] 
   user_id = session[:id]
-  db = open_database
-  db.execute("UPDATE recenssioner SET stars=?,picture=?,title=?,recenssion=? WHERE id = #{id}",rating,bild,title,recenssion)
-  redirect('/')
+  if rating == ""
+    text = "Fyll i alla fält"
+    result = select_all_from_recenssioner("id", id).first
+    slim(:'recenssion/edit',locals:{recenssion:result,text:text})
+  else
+    update_recenssion(rating,bild,title,recenssion,id)
+    redirect('/recenssioner/')
+  end
 end
 
 post('/recenssion/:recenssion/delete')do
   recenssion = params[:recenssion]
-  if right_persson(recenssion, session[:id])  || role(session[:id])
-    db = open_database
-    db.execute('DELETE FROM recenssioner WHERE title = ?',recenssion)
+  if right_persson(recenssion, session[:id]) || role(session[:id])
+    delete_recensson(recenssion)
     redirect('/recenssioner/')
   else
-    "error"
+    text = "Vänligen logga in först"
+    slim(:login,locals:{text:text})
   end
 end
 
 #users
 get('/users/new') do
-  slim(:'users/new')
+  text = ""
+  slim(:'users/new',locals:{text:text})
 end
 
 post('/users/new')do
@@ -174,23 +192,18 @@ post('/users/new')do
   password_confirm = params[:password_confirm]
   klass = params[:klass]
   role = params[:role]
-  
-  db = open_database
-  användare = db.execute('SELECT user_name FROM users WHERE user_name = (?)',username).first
+  användare = get_all_from_user(username)
   if användare != nil
-    "Användarnamnet finns redan"
+    text = "Användarnamnet finns redan"
+    slim(:'users/new',locals:{text:text})
   elsif (password == password_confirm)
-    password_digest = BCrypt::Password.create(password)
-    db = open_database
-    klass_id = db.execute('SELECT id FROM class WHERE name = (?)',klass).first
-    db.execute('INSERT INTO users (user_name,password,role,class_id) VALUES (?,?,?,?)',username,password_digest,role,klass_id["id"].to_i)
-    id = db.execute('SELECT id FROM users WHERE user_name = ?',username).first
+    id = incert_into_users(klass,username,password,role)
     session[:id] = id["id"]
     redirect('/')
   else
-    "lösenorden matchade inte"
+    text = "Lösenorden matchade inte"
+    slim(:'users/new',locals:{text:text})
   end
-
 end
 
 # Resturanger
@@ -215,35 +228,15 @@ post('/resturant')do
   db.execute('INSERT INTO resturants (name,location,picture,description) VALUES (?,?,?,?)',resturant,plats,path,beskrivning)
   id = db.execute('SELECT id FROM resturants WHERE name = ?',resturant).first
   db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori)
-  p "jag först här"
-  p "jag först här"
-  p "jag först här"
-  p "jag först här"
-  p "jag först här"
-  p antal
-  p antal
-  p antal
-  p antal
-
   if antal == 2
     kategori1 = params[:catagory1]
     db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori1)
   elsif antal == 3
-    p "jag är här"
-    p "jag är här"
-    p "jag är här"
-    p "jag är här"
-    p "jag är här"
-    p "jag är här"
-    p "jag är här"
     kategori1 = params[:catagory1]
     db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori1)
     kategori2 = params[:catagory2]
     db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori2)
   end
-
-  
-
   redirect('/')
   
 end
@@ -273,27 +266,9 @@ get('/resturant/:resturant')do
   slim(:'resturants/show',locals:{resturant:result, ratings:ratings})
 end
 
-get('/resturant/:resturant/edit')do
-  resturant = params[:resturant]
-  db = open_database
-  result = db.execute('SELECT * FROM resturants WHERE name = ?', resturant).first
-  slim(:'resturants/edit',locals:{resturant:result})
-end
-
-post('/resturant/:resturant/update')do
-  resturant = params[:resturant]
-  beskrivning = params[:beskrivning]
-  kategori = params[:catagory]
-  plats = params[:plats]
-  bild = params[:bild]
-  db = open_database
-  db.execute("UPDATE resturants WHERE name = #{resturant} SET name=?, location=?,picture=?,description=?,catagory_id=?",resturant,plats,bild,beskrivning,kategori)
-  redirect('/')
-end
 
 post('/resturant/:resturant/delete')do
   resturant = params[:resturant]
-  db = open_database
-  db.execute('DELETE FROM resturants WHERE name = ?',resturant)
+  delete_resturant(resturant)
   redirect('/resturant/')
 end
