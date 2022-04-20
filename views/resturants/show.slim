@@ -1,10 +1,12 @@
 main.show
     .resturant_wrapper
         .resturant
-            img class="resturant_img" src="/img/#{resturant["picture"]}.jpg" alt="resturangbild"/
+            img class="resturant_img" src="#{resturant["picture"]}" alt="resturangbild"/
             p class="resturant_name" = resturant["name"]
             p = resturant["description"]
-            p = category_id_to_category(resturant["catagory_id"]).first["name"]
+                p = resturant_id_to_category(resturant["id"])[0]
+                p = resturant_id_to_category(resturant["id"])[1]
+                p = resturant_id_to_category(resturant["id"])[2]
     br
     h2 Ressensioner
     .recession_wrapper

@@ -4,7 +4,7 @@ main
         - recenssioner.each do |recenssion|
             .recession
                 h2 = recenssion["resturant"]
-                p class="title_name" = recenssion["title"]
+                b class="title_name" = recenssion["title"]
                 p = recenssion["recenssion"]
                 p = number_to_stars(recenssion["stars"])
                 img class="recenssion_img" src="#{recenssion["picture"]}" alt="bild p recenssion"

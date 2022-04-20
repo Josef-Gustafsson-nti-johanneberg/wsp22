@@ -1,13 +1,39 @@
 main.asign
     .register_resturant
         h2 Registrera ny resturang
-        form action="/resturant" method="post" 
+        form action="/resturant" method="post" enctype="multipart/form-data"
             p Resturang namn
             input type="text" name="resturant" placeholder="Resturang"/
             p Beskrivning
             input type="text" name="beskrivning" placeholder="Beskrivning"/
+            p Antal kategorier
+            select# name="amount" 
+                option value="" Vänligen väl ett antal 
+                option value="1" 1 
+                option value="2" 2
+                option value="3" 3
             p Kategori
-            select# name="catagory" 
+            select# name="sak" 
+                option value="" Vänligen väl ett alternativ 
+                option value="1" Snabbmat 
+                option value="2" Finresturang
+                option value="3" Indiskt
+                option value="4" Kinesiskt
+                option value="5" Husmanskost
+                option value="6" Gormet
+                option value="7" Takaway
+            br
+            select# name="catagory1" 
+                option value="" Vänligen väl ett alternativ 
+                option value="1" Snabbmat 
+                option value="2" Finresturang
+                option value="3" Indiskt
+                option value="4" Kinesiskt
+                option value="5" Husmanskost
+                option value="6" Gormet
+                option value="7" Takaway
+            br
+            select# name="catagory2" 
                 option value="" Vänligen väl ett alternativ 
                 option value="1" Snabbmat 
                 option value="2" Finresturang
@@ -19,7 +45,8 @@ main.asign
             p Plats
             input type="text" name="plats" placeholder="Plats"/
             p Bild
-            input type="text" name="bild" placeholder="Bild scr"/
+            input type="file" name="image"
+            br
             input type="submit" value="Registrera ny resturang"/
 
     

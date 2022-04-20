@@ -33,16 +33,16 @@ helpers do
     stars = ""
     for i in 1..star_number do
       stars += "★"
-      p stars
     end
     return stars
   end
 end
 
 helpers do
-  def category_id_to_category(id)
+  def resturant_id_to_category(id)
     db = open_database
-    return db.execute('SELECT name FROM category WHERE id = (?)',id)
+    db.results_as_hash = false
+  return db.execute('SELECT category.name FROM resturnat_category_relation INNER JOIN category ON resturnat_category_relation.category_id = category.id WHERE resturant_id = (?)',id)
   end
 end
 
@@ -100,13 +100,13 @@ get('/recenssioner/'){
 }
 
 get('/recenssioner/new'){
-  # if role(session[:id]) != nil
+  if role(session[:id]) != nil
     db = open_database
     result = db.execute('SELECT name FROM resturants')
     slim(:'recenssion/new',locals:{resturant_name:result})
-  # else
-  #   redirect('/showlogin')
-  # end
+  else
+    redirect('/showlogin')
+  end
 }
 
 post('/recenssioner'){
@@ -115,13 +115,10 @@ post('/recenssioner'){
   recenssion = params[:recenssion]
   rating = params[:rating]
   user_id = session[:id]
-  # path = File.join("./public/uploaded_pictures/",params[:file][:filename])
   if params[:image] && params[:image][:filename]
     filename = params[:image][:filename]
     file = params[:image][:tempfile]
     path = "./public/uploaded_pictures/#{filename}"
-
-    # Write file to disk
     File.open(path, 'wb') do |f|
       f.write(file.read)
     end
@@ -197,35 +194,75 @@ post('/users/new')do
 end
 
 # Resturanger
-
 post('/resturant')do
   resturant = params[:resturant]
   beskrivning = params[:beskrivning]
-  kategori = params[:catagory]
+  antal = params[:amount].to_i
+  kategori = params[:sak]
   plats = params[:plats]
   bild = params[:bild]
-
   db = open_database
-  db.execute('INSERT INTO resturants (name,location,picture,description,catagory_id) VALUES (?,?,?,?,?)',resturant,plats,bild,beskrivning,kategori)
+
+  if params[:image] && params[:image][:filename]
+    filename = params[:image][:filename]
+    file = params[:image][:tempfile]
+    path = "./public/uploaded_pictures/#{filename}"
+    File.open(path, 'wb') do |f|
+      f.write(file.read)
+    end
+  end
+  path = "/uploaded_pictures/#{filename}"
+  db.execute('INSERT INTO resturants (name,location,picture,description) VALUES (?,?,?,?)',resturant,plats,path,beskrivning)
+  id = db.execute('SELECT id FROM resturants WHERE name = ?',resturant).first
+  db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori)
+  p "jag först här"
+  p "jag först här"
+  p "jag först här"
+  p "jag först här"
+  p "jag först här"
+  p antal
+  p antal
+  p antal
+  p antal
+
+  if antal == 2
+    kategori1 = params[:catagory1]
+    db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori1)
+  elsif antal == 3
+    p "jag är här"
+    p "jag är här"
+    p "jag är här"
+    p "jag är här"
+    p "jag är här"
+    p "jag är här"
+    p "jag är här"
+    kategori1 = params[:catagory1]
+    db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori1)
+    kategori2 = params[:catagory2]
+    db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id["id"],kategori2)
+  end
+
+  
+
   redirect('/')
   
 end
 
 get('/resturant/')do
-  # if role(session[:id]) == "Admin"
+  if role(session[:id]) == "Admin"
     db = open_database
     result = db.execute('SELECT * FROM resturants')
     slim(:'resturants/index',locals:{resturants:result})
-  # else
-  #   redirect('/showlogin')
-  # end
+  else
+    redirect('/showlogin')
+  end
 end
 get('/resturant/new')do
-  # if role(session[:id]) != nil
+  if role(session[:id]) != nil
     slim(:'resturants/new')
-  # else
-  #   redirect('/showlogin')
-  # end
+  else
+    redirect('/showlogin')
+  end
 end
 
 get('/resturant/:resturant')do
