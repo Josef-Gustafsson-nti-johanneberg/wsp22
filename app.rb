@@ -11,8 +11,11 @@ enable :sessions
 
 include Model #wat dis?
 
-# en test sak nu
-#
+# Omvandlar ett heltal till en sträng med lika många stjärnor
+# 
+# @param [integer] star_number heltal på hur många stjärnor som ska skickas tillbaka
+# 
+# @return [string] En sträng returneras med stjärnor
 helpers do 
   def number_to_stars(star_number)
     stars = ""
@@ -23,13 +26,23 @@ helpers do
   end
 end
 
-
+# En hjälpfunktion som kan kommas år ifrån en slimfil
+# 
+# @param [integer] id heltal på ett id
+# 
+# @return [string] kategorin på en resturang
 helpers do
   def resturant_id_to_category(id)
     return innerjoin(id)
   end
 end
 
+# En funktion som kollar hur långt det är mellan olika inlogg som har gjorts
+# 
+# @param [array] time_array En array som inehåller de olika tidspunkterna som någon har försökt att logga in
+# @param [integer] time Ett heltal på vad tiden är vid inloggningsförsöket
+# 
+# @return [boolean] returnerar true eller false på om en cooldown behövs
 def cooldown(time_array, time)
   time_array << time
   if time_array.length >=3 && time_array[-1]-time_array[-2] < 10

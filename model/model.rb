@@ -137,7 +137,14 @@ module Model
         return recenssion_user_id["user_id"] == user_id
     end
 
-
+    # skapar en ny rad med information i users tabellen och skickar tillbaka id som den blev tilldelad
+    #
+    # @param [string] klass Är klassen som användaren går i
+    # @param [string] username Är användarnamnet som användaren valde
+    # @param [string] password Är lösenordet som användaren valde
+    # @param [string] role Är rollen som användaren valde
+    #
+    # @return [integer] skickar tillbaka id på den nya användaren
     def incert_into_users(klass,username,password,role)
         db = open_database
         password_digest = BCrypt::Password.create(password)
@@ -146,16 +153,33 @@ module Model
         return db.execute('SELECT id FROM users WHERE user_name = ?',username).first
     end
 
+    # skapar en ny rad med information i recenssioner tabellen
+    #
+    # @param [integer] user_id Är user_id som skapade recenssionen
+    # @param [string] resturang Är resturang namnet som recenseras
+    # @param [integer] rating Är ett tal mellan 1-5 som motsvarar hur många stjärnor resturangen fick
+    # @param [string] path Är sökvägen till den bild som användes till recensionen
+    # @param [string] recenssion Är brödtexten i recensionen
     def incert_into_recenssion(user_id,resturang,rating,path,titel,recenssion)
         db = open_database
         db.execute('INSERT INTO recenssioner (user_id,resturant,stars,picture,title,recenssion) VALUES (?,?,?,?,?,?)',user_id,resturang,rating,path,titel,recenssion)
     end
 
+    # skapar en ny rad med information i resturants tabellen
+    #
+    # @param [string] resturant Resturang namnet
+    # @param [string] plats Vart resturangen ligger
+    # @param [string] path Sökvägen till tillhörande bild på resturangen
+    # @param [string] beskrivning Beskrivning om resturangen
     def incert_into_resturants(resturant,plats,path,beskrivning)
         db = open_database
         db.execute('INSERT INTO resturants (name,location,picture,description) VALUES (?,?,?,?)',resturant,plats,path,beskrivning)
     end
       
+    # skapar en ny rad med information i resturnat_category_relation tabellen
+    #
+    # @param [integer] id Är id på resturangen 
+    # @param [integer] id Är id på kategorin 
     def incert_into_resturnat_category_relation(id,kategori)
         db = open_database
         db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id,kategori)
@@ -164,7 +188,6 @@ module Model
     # Tar bort en resturang med namne resturant
     # 
     # @param [string] resturant Namnet på resturangen
-
     def delete_resturant(resturant)
         db = open_database
         db.execute('DELETE FROM resturants WHERE name = ?',resturant)
@@ -178,12 +201,25 @@ module Model
         db.execute('DELETE FROM recenssioner WHERE title = ?',recenssion)
     end
 
+    # Hämtar category.name ifrån resturnat_category_relation tabellen där resturant_id är lika med id
+    # 
+    # @param [integer] id Id på den resturang som man vill hämta kategorier på
+    # 
+    # @return [hash]
+    #  * :name[string] Namnet på kategorin
     def innerjoin(id)
         db = open_database
         db.results_as_hash = false
         return db.execute('SELECT category.name FROM resturnat_category_relation INNER JOIN category ON resturnat_category_relation.category_id = category.id WHERE resturant_id = (?)',id)
     end
 
+    # Uppdaterar en rad i recenssion tabellen
+    # 
+    # @param [integer] rating Är ett tal mellan 1-5 som motsvarar hur många stjärnor resturangen fick
+    # @param [string] bild Är sökvägen till den bild som användes till recensionen
+    # @param [string] title Är titlen på recenssionen
+    # @param [string] recenssion Är brödtexten i recensionen
+    # @param [integer] id Är id på orginalrecensionen 
     def update_recenssion(rating,bild,title,recenssion,id)
         db = open_database
         db.execute("UPDATE recenssioner SET stars=?,picture=?,title=?,recenssion=? WHERE id = #{id}",rating,bild,title,recenssion)
