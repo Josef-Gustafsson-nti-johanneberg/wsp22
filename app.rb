@@ -11,6 +11,14 @@ enable :sessions
 
 include Model #wat dis?
 
+before do
+  if session[:id] == nil
+    if (request.path_info != '/') && (request.path_info != '/showlogin/') && (request.path_info != '/login') && (request.path_info != '/users/new')  && (request.path_info != '/users')
+      redirect('/showlogin/')
+    end
+  end
+end
+
 # Omvandlar ett heltal till en sträng med lika många stjärnor
 # 
 # @param [integer] star_number heltal på hur många stjärnor som ska skickas tillbaka
