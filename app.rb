@@ -62,7 +62,7 @@ end
 
 # Visar upp inloggnings sidan där användaren får logga in
 # 
-get('/showlogin') do
+get('/showlogin/') do
   text = ""
   slim(:login,locals:{text:text})
 end
@@ -249,7 +249,7 @@ end
 # @param [string] :role, rollen som anvnädaren fick välja
 # @see Model#get_all_from_user
 # @see Model#incert_into_user
-post('/users/new')do
+post('/users')do
   username = params[:username].downcase
   password = params[:password]
   password_confirm = params[:password_confirm]
