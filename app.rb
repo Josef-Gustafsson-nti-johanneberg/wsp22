@@ -137,7 +137,7 @@ get('/recenssioner/new'){
     result = select_name_from_resturants
     slim(:'recenssion/new',locals:{resturant_name:result})
   else
-    redirect('/showlogin')
+    redirect('/showlogin/')
   end
 }
 
@@ -198,7 +198,8 @@ end
 # @param [string] :bild, är sökvägen till bilden som användaren laddade upp
 # #see Model#select_all_from_recenssioner
 # #see Model#update_recenssion
-
+# @see Model#role
+# @see Model#right_persson
 post('/recenssion/:id/update')do
   id = params[:id]
   title = params[:titel]
@@ -206,14 +207,20 @@ post('/recenssion/:id/update')do
   rating = params[:rating]
   bild = params[:bild] 
   user_id = session[:id]
-  if rating == ""
-    text = "Fyll i alla fält"
-    result = select_all_from_recenssioner("id", id).first
-    slim(:'recenssion/edit',locals:{recenssion:result,text:text})
+  if right_persson(title, session[:id]) || role(session[:id])
+    if rating == ""
+      text = "Fyll i alla fält"
+      result = select_all_from_recenssioner("id", id).first
+      slim(:'recenssion/edit',locals:{recenssion:result,text:text})
+    else
+      update_recenssion(rating,bild,title,recenssion,id)
+      redirect('/recenssioner/')
+    end
   else
-    update_recenssion(rating,bild,title,recenssion,id)
-    redirect('/recenssioner/')
+    text = "Vänligen logga in först"
+    slim(:login,locals:{text:text})
   end
+
 end
 
 # Tar bort en recenssion och leder användaren till recenssions sidan, om användaren inte får ta bort den så omleds användaren till login sidan
@@ -323,7 +330,7 @@ get('/resturant/')do
     result = select_all_from_resturants()
     slim(:'resturants/index',locals:{resturants:result})
   else
-    redirect('/showlogin')
+    redirect('/showlogin/')
   end
 end
 
@@ -333,7 +340,7 @@ get('/resturant/new')do
   if role(session[:id]) == "Admin"
     slim(:'resturants/new')
   else
-    redirect('/showlogin')
+    redirect('/showlogin/')
   end
 end
 
