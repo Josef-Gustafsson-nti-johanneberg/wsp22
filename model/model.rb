@@ -185,12 +185,13 @@ module Model
         db.execute('INSERT INTO resturnat_category_relation(resturant_id,category_id) VALUES (?,?)',id,kategori)
     end
 
-    # Tar bort en resturang med namne resturant
+    # Tar bort en resturang med namne resturant samt recenssionerna till den
     # 
     # @param [string] resturant Namnet på resturangen
     def delete_resturant(resturant)
         db = open_database
         db.execute('DELETE FROM resturants WHERE name = ?',resturant)
+        db.execute('DELETE FROM recenssioner WHERE resturant = ?',resturant)
     end
     
     # Tar bort en recension med title recenssion
